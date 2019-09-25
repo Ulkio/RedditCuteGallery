@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:flv="clr-namespace:DLToolkit.Forms.Controls;assembly=DLToolkit.Forms.Controls.FlowListView"
+             xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             mc:Ignorable="d"
+             x:Class="gallery.MainPage">
+
+    <StackLayout>
+        <!-- Place new controls here -->
+
+
+
+        <flv:FlowListView x:Name="gridaww" 
+                           FlowItemTappedCommand="{Binding ItemTappedCommand}">
+
+
+            <flv:FlowListView.FlowColumnTemplate>
+                <DataTemplate>
+                    <StackLayout>
+
+                        <ffimageloading:CachedImage HorizontalOptions="Center" VerticalOptions="Center"
+			                WidthRequest="300" HeightRequest="300"
+			                DownsampleToViewSize="true"
+                            Aspect="AspectFill"
+			                Source = "{Binding }">
+                            <ffimageloading:CachedImage.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                            </ffimageloading:CachedImage.GestureRecognizers>
+                        </ffimageloading:CachedImage>
+
+                    </StackLayout>
+                </DataTemplate>
+            </flv:FlowListView.FlowColumnTemplate>
+
+        </flv:FlowListView>
+    </StackLayout>
+
+</ContentPage>
