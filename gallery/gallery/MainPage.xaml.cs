@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Reddit;
+using Reddit.Controllers;
 using Reddit.Inputs;
 using Reddit.Inputs.LinksAndComments;
 using Reddit.Inputs.Subreddits;
@@ -47,29 +48,21 @@ namespace gallery
             var r = new RedditAPI("8fp-KAo4cqMTCA", "42551102-qKfgfzbeZW1MZaegec6AiOZ8z0w");
             var sub = r.Subreddit("aww");
 
-            var getHotPosts = r.Models.Listings.Hot(new Reddit.Inputs.Listings.ListingsHotInput(limit:20), "aww").Data.Children;
-            var getRisingPosts = r.Models.Listings.Rising(new CategorizedSrListingInput(limit: 15), "aww").Data.Children;
-            string url = "";
-            List<String> getUrlFromPosts = new List<string>();
+            var getHotPosts = sub.Posts.GetHot(limit: 20);
+            var getRisingPosts = sub.Posts.GetRising(limit: 15);
 
-
-            
-
-
-            foreach (var item in getHotPosts)
+            List<string> getUrlFromPosts = new List<string>();
+            for (int i = 0; i < Math.Max(getHotPosts.Count, getRisingPosts.Count); i++)
             {
-                if ((item.Data.URL.Contains("jpg") || item.Data.URL.Contains("png")))
+                if (i < getHotPosts.Count 
+                    && !getHotPosts[i].Listing.IsSelf)
                 {
-                    url = item.Data.URL;
-                    getUrlFromPosts.Add(url);
+                    AddPostURL(r, (SelfPost)getHotPosts[i], ref getUrlFromPosts);
                 }
-            }
-            foreach (var item in getRisingPosts)
-            {
-                if ((item.Data.URL.Contains("jpg") || item.Data.URL.Contains("png")))
+                if (i < getRisingPosts.Count
+                    && !getRisingPosts[i].Listing.IsSelf)
                 {
-                    url = item.Data.URL;
-                    getUrlFromPosts.Add(url);
+                    AddPostURL(r, (SelfPost)getRisingPosts[i], ref getUrlFromPosts);
                 }
             }
 
@@ -87,7 +80,15 @@ namespace gallery
 
         }
 
-        
+        private void AddPostURL(RedditAPI r, SelfPost post, ref List<string> getUrlFromPosts)
+        {
+            string url = (new LinkPost(r.Models, post)).URL;
+            if (url.Contains("jpg", StringComparison.OrdinalIgnoreCase)
+                || url.Contains("png", StringComparison.OrdinalIgnoreCase))
+            {
+                getUrlFromPosts.Add(url);
+            }
+        }
     }
 
     
